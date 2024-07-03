@@ -7,33 +7,41 @@ using UsersManagement.Services;
 
 namespace UsersManagement.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] User login)
-        {
-            if (login == null || string.IsNullOrEmpty(login.Login) || string.IsNullOrEmpty(login.Password))
-            {
-                return BadRequest("Invalid client request");
-            }
+        private readonly UserService _userService;
+        //[HttpPost("login")]
+        //public IActionResult Login(string login, string password)
+        //{
+            //if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(login))
+            //{
+            //    return BadRequest("Invalid client request");
+            //}
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, login.Name)
-            };
+            //if (_userService.GetUserById(id))
+            //{
 
-            var token = new JwtSecurityToken(
-                issuer: AuthOptions.ISSUER,
-                audience: AuthOptions.AUDIENCE,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
-                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
-            );
+            //}
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return Ok(new { Token = tokenString });
-        }
+
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, login.Login)
+            //};
+
+            //var token = new JwtSecurityToken(
+            //    issuer: AuthOptions.ISSUER,
+            //    audience: AuthOptions.AUDIENCE,
+            //    claims: claims,
+            //    expires: DateTime.UtcNow.AddMinutes(30),
+            //    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
+            //);
+
+            //var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            //return Ok(new { Token = tokenString });
+        //}
     }
 }
