@@ -13,35 +13,36 @@ namespace UsersManagement.Controllers
     public class AuthController : Controller
     {
         private readonly UserService _userService;
-        //[HttpPost("login")]
-        //public IActionResult Login(string login, string password)
-        //{
-            //if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(login))
-            //{
-            //    return BadRequest("Invalid client request");
-            //}
+        [HttpPost("login")]
+        public IActionResult Login(string login, string password)
+        {
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(login))
+            {
+                return BadRequest("Invalid client request");
+            }
 
-            //if (_userService.GetUserById(id))
-            //{
+            var userLogin = _userService.GetByLogin(login);
 
-            //}
+            if (userLogin == null)
+            {
+                return BadRequest("Error login not found");
+            }
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userLogin.Login)
+            };
 
-            //var claims = new List<Claim>
-            //{
-            //    new Claim(ClaimTypes.Name, login.Login)
-            //};
+            var token = new JwtSecurityToken(
+                issuer: AuthOptions.ISSUER,
+                audience: AuthOptions.AUDIENCE,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
+            );
 
-            //var token = new JwtSecurityToken(
-            //    issuer: AuthOptions.ISSUER,
-            //    audience: AuthOptions.AUDIENCE,
-            //    claims: claims,
-            //    expires: DateTime.UtcNow.AddMinutes(30),
-            //    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
-            //);
-
-            //var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            //return Ok(new { Token = tokenString });
-        //}
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new { Token = tokenString });
+        }
     }
 }

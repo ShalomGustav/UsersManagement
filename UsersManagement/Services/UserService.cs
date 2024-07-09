@@ -1,4 +1,5 @@
-﻿using UsersManagement.Models;
+﻿using System.Net.WebSockets;
+using UsersManagement.Models;
 
 namespace UsersManagement.Services;
 
@@ -14,6 +15,23 @@ public class UserService
     public List<User> GetUsers()
     {
         return _users;
+    }
+
+    public User GetByLogin(string login)
+    {
+        if (string.IsNullOrEmpty(login))
+        {
+            throw new ArgumentNullException(nameof(login));
+        }
+
+        var user = _users.FirstOrDefault(x => x.Login == login);
+
+        if (user == null)
+        {
+            throw new NullReferenceException(nameof(user));
+        }
+
+        return user;    
     }
 
     public User GetUserById(string id)
