@@ -22,7 +22,7 @@ namespace UsersManagement.Controllers
         }
 
         [HttpGet("users/{id}")]
-        [Authorize]
+        [Authorize]//
         public ActionResult GetUserById(string id)
         {
             if (string.IsNullOrEmpty(id))

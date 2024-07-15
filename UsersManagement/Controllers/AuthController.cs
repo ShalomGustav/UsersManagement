@@ -12,6 +12,7 @@ namespace UsersManagement.Controllers
     [ApiController]
     public class AuthController : Controller
     {
+        //конструктор дописать 
         private readonly UserService _userService;
         [HttpPost("login")]
         public IActionResult Login(string login, string password)
@@ -21,16 +22,23 @@ namespace UsersManagement.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            var userLogin = _userService.GetByLogin(login);
+            var user = _userService.GetByLogin(login);
 
-            if (userLogin == null)
+            if (user == null)
             {
                 return BadRequest("Error login not found");
+            }
+            
+            //var x = new object();
+            //x.Equals
+            if(user.Password != password)//компоратор => string
+            {
+                return BadRequest("Error password not found");
             }
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, userLogin.Login)
+                new Claim(ClaimTypes.Name, user.Login)
             };
 
             var token = new JwtSecurityToken(

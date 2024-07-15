@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UsersManagement.Repositories.Common;
 
 namespace UsersManagement.Models;
 
-public class UserEntity
+public class UserEntity : Entity, IDateEntity<UserEntity, User>
 {
-    [Required]
-    [StringLength(128)]
-    public string Id { get; set; }
+    //[Required]
+    //[StringLength(128)]
+    //public string Id { get; set; }
 
     [Required]
     [StringLength(256)]

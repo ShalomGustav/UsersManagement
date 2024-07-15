@@ -1,8 +1,9 @@
 ﻿using UsersManagement.Models;
+using UsersManagement.Repositories.Common;
 
 namespace UsersManagement.Repositories;
 
-public interface IUserRepository 
+public interface IUserRepository : IRepository
 {
-    Task<UserEntity[]> GetUserByIdsAsync(string[] ids);
+    Task<UserEntity[]> GetUsersByIdsAsync(string[] ids);
 }

@@ -12,6 +12,8 @@ public abstract class DbContextRepositoryBase<TContext> : IRepository where TCon
         // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#cascade
         // The new CascadeTiming.Immediate that is used by default in EF Core 3.0 is lead wrong track as Added  for Deleted dependent/child entities during
         // work of Patch method for data entities  
+        
+        //каскадное удаление
         DbContext.ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
         DbContext.ChangeTracker.DeleteOrphansTiming = CascadeTiming.OnSaveChanges;
 
@@ -38,7 +40,7 @@ public abstract class DbContextRepositoryBase<TContext> : IRepository where TCon
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="item">The item.</param>
-    public void Attach<T>(T item) where T : class
+    public void Attach<T>(T item) where T : class // прикрепление сущности к контексту
     {
         DbContext.Attach(item);
     }
@@ -48,7 +50,7 @@ public abstract class DbContextRepositoryBase<TContext> : IRepository where TCon
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="item">The item.</param>
-    public void Add<T>(T item) where T : class
+    public void Add<T>(T item) where T : class //Добавление сущности к контексту
     {
         DbContext.Add(item);
     }
@@ -58,7 +60,7 @@ public abstract class DbContextRepositoryBase<TContext> : IRepository where TCon
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="item">The item.</param>
-    public void Update<T>(T item) where T : class
+    public void Update<T>(T item) where T : class // обновление сущности контекста
     {
         DbContext.Update(item);
         DbContext.Entry(item).State = EntityState.Modified;
@@ -74,6 +76,8 @@ public abstract class DbContextRepositoryBase<TContext> : IRepository where TCon
         DbContext.Remove(item);
     }
 
+
+    //овобождение ресурсов занятых контекстом бд
     // Dispose() calls Dispose(true)
     public void Dispose()
     {

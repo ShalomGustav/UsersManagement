@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UsersManagement.Repositories.Common;
 
 namespace UsersManagement.Models;
 
-public class User
+public class User : Entity
 {
-    public string Id { get; set; }
+    //public string Id { get; set; }
 
     [RegularExpression(@"^[a-zA-Z0-9]+$")]
     public string Login { get; set; }

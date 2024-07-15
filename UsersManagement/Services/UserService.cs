@@ -1,15 +1,19 @@
 ﻿using System.Net.WebSockets;
 using UsersManagement.Models;
+using UsersManagement.Repositories;
+using UsersManagement.Repositories.Common;
 
 namespace UsersManagement.Services;
 
-public class UserService
+public class UserService : CrudService<User,UserEntity>
 {
     private readonly List<User> _users;
+    private readonly Func<IUserRepository> _repositoryFactory;
 
-    public UserService()
+    public UserService(Func<IUserRepository> repositoryFactory) : base(repositoryFactory)
     {
         _users = new List<User>();
+        _repositoryFactory = repositoryFactory;
     }
 
     public List<User> GetUsers()
@@ -34,14 +38,14 @@ public class UserService
         return user;    
     }
 
-    public User GetUserById(string id)
+    public async Task<User> GetUserById(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
             throw new ArgumentNullException(nameof(id));
         }
         
-        var user = _users.FirstOrDefault(x => x.Id == id);
+        var user = await GetByIdAsync(id);
         
         if(user == null)
         {
@@ -50,7 +54,7 @@ public class UserService
 
         return user;
     }
-    //
+
     public void CreateUser(User user)
     {
         if(user == null)
@@ -97,5 +101,12 @@ public class UserService
 
         var user = GetUserById(id);
         _users.Remove(user);
+    }
+
+    protected async override Task<UserEntity[]> LoadEntities(
+        IRepository repository,
+        IEnumerable<string> ids)
+    {
+       return await ((IUserRepository) repository).GetUsersByIdsAsync(ids.ToArray());
     }
 }
