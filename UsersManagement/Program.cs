@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UsersManagement.Repositories;
 using UsersManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<UserService>();
+
+builder.Services.AddDbContext<UserDbContext>((provider, options) =>
+{
+    options.UseSqlServer("Data Source=(local);Initial Catalog=UserManagement;Persist Security Info=True;User ID=test;Password=test;MultipleActiveResultSets=True;Connect Timeout=30;TrustServerCertificate=True");
+});
+
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+builder.Services.AddTransient<Func<IUserRepository>>(provider => () => provider.CreateScope().
+ServiceProvider.GetRequiredService<IUserRepository>());
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -66,6 +80,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
 builder.Services.AddAuthorization();//
 
 var app = builder.Build();
+using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+var dbContext = scope.ServiceProvider.GetService<UserDbContext>();
+dbContext.Database.Migrate();
 
 if (app.Environment.IsDevelopment())
 {

@@ -7,21 +7,38 @@ using UsersManagement.Services;
 
 namespace UsersManagement.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
     {
+        //конструктор дописать 
+        private readonly UserService _userService;
         [HttpPost("login")]
-        public IActionResult Login([FromBody] User login)
+        public IActionResult Login(string login, string password)
         {
-            if (login == null || string.IsNullOrEmpty(login.Login) || string.IsNullOrEmpty(login.Password))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(login))
             {
                 return BadRequest("Invalid client request");
             }
 
+            var user = _userService.GetByLogin(login);
+
+            if (user == null)
+            {
+                return BadRequest("Error login not found");
+            }
+            
+            //var x = new object();
+            //x.Equals
+            if(user.Password != password)//компоратор => string
+            {
+                return BadRequest("Error password not found");
+            }
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, login.Name)
+                new Claim(ClaimTypes.Name, user.Login)
             };
 
             var token = new JwtSecurityToken(
