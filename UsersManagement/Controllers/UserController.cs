@@ -22,15 +22,15 @@ namespace UsersManagement.Controllers
         }
 
         [HttpGet("users/{id}")]
-        [Authorize]//
-        public ActionResult GetUserById(string id)
+        //[Authorize]//
+        public async Task<ActionResult> GetUserById(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest();
             }
 
-            var result = _userService.GetUserById(id);
+            var result = await _userService.GetUserById(id);
             return Ok(result);
         }
 

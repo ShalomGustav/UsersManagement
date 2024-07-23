@@ -5,10 +5,6 @@ namespace UsersManagement.Models;
 
 public class UserEntity : Entity, IDateEntity<UserEntity, User>
 {
-    //[Required]
-    //[StringLength(128)]
-    //public string Id { get; set; }
-
     [Required]
     [StringLength(256)]
     public string Login { get; set; }

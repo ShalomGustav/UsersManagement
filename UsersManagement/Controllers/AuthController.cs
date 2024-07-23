@@ -2,22 +2,25 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using UsersManagement.Models;
 using UsersManagement.Services;
 
 namespace UsersManagement.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
     {
-        //конструктор дописать 
+
         private readonly UserService _userService;
+        public AuthController(UserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpPost("login")]
         public IActionResult Login(string login, string password)
         {
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(login))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
                 return BadRequest("Invalid client request");
             }
@@ -28,10 +31,8 @@ namespace UsersManagement.Controllers
             {
                 return BadRequest("Error login not found");
             }
-            
-            //var x = new object();
-            //x.Equals
-            if(user.Password != password)//компоратор => string
+
+            if (string.Compare(user.Password, password) != 0)
             {
                 return BadRequest("Error password not found");
             }

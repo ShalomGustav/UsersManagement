@@ -5,8 +5,6 @@ namespace UsersManagement.Models;
 
 public class User : Entity
 {
-    //public string Id { get; set; }
-
     [RegularExpression(@"^[a-zA-Z0-9]+$")]
     public string Login { get; set; }
 
