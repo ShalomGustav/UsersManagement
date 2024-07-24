@@ -14,9 +14,7 @@ public class UserDbContext : DbContext
     protected UserDbContext(DbContextOptions options) : base(options)
     {
     }
-
-    
-
+      
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserEntity>().ToTable("User").HasKey(x => x.Id);

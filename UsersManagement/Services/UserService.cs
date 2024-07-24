@@ -21,14 +21,14 @@ public class UserService : CrudService<User,UserEntity>
         return _users;
     }
 
-    public User GetByLogin(string login)
+    public async Task<User> GetByLogin(string login)
     {
         if (string.IsNullOrEmpty(login))
         {
             throw new ArgumentNullException(nameof(login));
         }
 
-        var user = _users.FirstOrDefault(x => x.Login == login);
+        var user = await GetUserByLoginAsync(login);
 
         if (user == null)
         {
@@ -55,52 +55,68 @@ public class UserService : CrudService<User,UserEntity>
         return user;
     }
 
-    public void CreateUser(User user)
+    public async Task SaveChangesAsync(User user)
     {
-        if(user == null)
+        if (user == null)
         {
             throw new ArgumentNullException(nameof(user));
         }
 
-        var result = _users.FirstOrDefault(x => x.Id == user.Id || x.Login == user.Login);
+        await SaveChangesAsync(new[] { user });
+    }
+
+
+    //public void CreateUser(User user)////сделать SaveChangesAsync
+    //{
+    //    if(user == null)
+    //    {
+    //        throw new ArgumentNullException(nameof(user));
+    //    }
+
+    //    var result = await _users.FirstOrDefaultAsync(x => x.Id == user.Id || x.Login == user.Login);
         
-        if(result != null)
-        {
-            throw new Exception("Ошибка создания пользователя");
-        }
+    //    if(result != null)
+    //    {
+    //        throw new Exception("Ошибка создания пользователя");
+    //    }
 
-        _users.Add(user);
-    }
+    //    _users.Add(user);
+    //}
 
-    public User UpdateUser(User user)
-    {
-        if(user == null)
-        {
-            throw new ArgumentNullException(nameof(user));
-        }
+    //public async Task<User> UpdateUser(User user)
+    //{
+    //    if(user == null)
+    //    {
+    //        throw new ArgumentNullException(nameof(user));
+    //    }
 
-        if(string.IsNullOrEmpty(user.Id))
-        {
-            user.Id = Guid.NewGuid().ToString();
-        }
-        else
-        {
-            var userById = GetUserById(user.Id);
-            _users.Remove(userById);
-        }
-        _users.Add(user);
-        return user;
-    }
+    //    //if(string.IsNullOrEmpty(user.Id))
+    //    //{
+    //    //    user.Id = Guid.NewGuid().ToString();
+    //    //}
+    //    //else
+    //    //{
+    //    //    var userById = await GetUserById(user.Id); ///
+    //    //    _users.Remove(userById);
+    //    //}
+    //    //_users.Add(user);
+    //    //return user;
 
-    public void DeleteUser(string id)
+    //    await SaveChangesAsync(new[] { user });
+    //    return user;
+    //}
+
+    public async Task DeleteUser(string id)////
     {
         if (string.IsNullOrEmpty(id))
         {
             throw new ArgumentNullException(nameof(id));
         }
 
-        var user = GetUserById(id);
-        _users.Remove(user);
+        //var user = await GetUserById(id);////
+        //_users.Remove(user);
+
+        await DeleteAsync(new[] {id});
     }
 
     protected async override Task<UserEntity[]> LoadEntities(
