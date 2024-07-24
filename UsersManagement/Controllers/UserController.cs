@@ -22,7 +22,6 @@ namespace UsersManagement.Controllers
         }
 
         [HttpGet("users/{id}")]
-        //[Authorize]//
         public async Task<ActionResult> GetUserById(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -46,24 +45,24 @@ namespace UsersManagement.Controllers
         }
 
         [HttpPost("users")]
-        public void CreateUser(User user)
+        public async Task SaveChangesAsync(User user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            _userService.CreateUser(user);
+            await _userService.SaveChangesAsync(user);
         }
 
-        [HttpPut("users")]
-        public void UpdateUser(User user) 
-        { 
-            if (user == null)
-            {
-                throw new ArgumentException(nameof(user));
-            }
-            _userService.UpdateUser(user);
-        }
+        //[HttpPut("users")]
+        //public async Task UpdateUser(User user) 
+        //{ 
+        //    if (user == null)
+        //    {
+        //        throw new ArgumentException(nameof(user));
+        //    }
+        //    await _userService.SaveChangesAsync(user);
+        //}
 
         [HttpDelete("users/{id}")]  
         public void DeleteUser(string id, bool admin)

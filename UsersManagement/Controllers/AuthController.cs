@@ -18,14 +18,14 @@ namespace UsersManagement.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(string login, string password)
+        public async Task<IActionResult> Login(string login, string password)
         {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
                 return BadRequest("Invalid client request");
             }
 
-            var user = _userService.GetByLogin(login);
+            var user = await _userService.GetByLogin(login);
 
             if (user == null)
             {
