@@ -1,7 +1,7 @@
-﻿using System.Net.WebSockets;
-using UsersManagement.Models;
+﻿using UsersManagement.Models;
 using UsersManagement.Repositories;
 using UsersManagement.Repositories.Common;
+
 
 namespace UsersManagement.Services;
 
@@ -28,14 +28,18 @@ public class UserService : CrudService<User,UserEntity>
             throw new ArgumentNullException(nameof(login));
         }
 
-        var user = await GetUserByLoginAsync(login);
-
-        if (user == null)
+        using (var repository = _repositoryFactory())
         {
-            throw new NullReferenceException(nameof(user));
-        }
+            var userEntity = await repository.GetUserByLoginAsync(login);
 
-        return user;    
+            if (userEntity == null)
+            {
+                throw new NullReferenceException(nameof(userEntity));
+            }
+
+            var user = userEntity.ToModel(AbstractTypeFactory<User>.TryCreateInstance());
+            return user;
+        }
     }
 
     public async Task<User> GetUserById(string id)
@@ -65,56 +69,12 @@ public class UserService : CrudService<User,UserEntity>
         await SaveChangesAsync(new[] { user });
     }
 
-
-    //public void CreateUser(User user)////сделать SaveChangesAsync
-    //{
-    //    if(user == null)
-    //    {
-    //        throw new ArgumentNullException(nameof(user));
-    //    }
-
-    //    var result = await _users.FirstOrDefaultAsync(x => x.Id == user.Id || x.Login == user.Login);
-        
-    //    if(result != null)
-    //    {
-    //        throw new Exception("Ошибка создания пользователя");
-    //    }
-
-    //    _users.Add(user);
-    //}
-
-    //public async Task<User> UpdateUser(User user)
-    //{
-    //    if(user == null)
-    //    {
-    //        throw new ArgumentNullException(nameof(user));
-    //    }
-
-    //    //if(string.IsNullOrEmpty(user.Id))
-    //    //{
-    //    //    user.Id = Guid.NewGuid().ToString();
-    //    //}
-    //    //else
-    //    //{
-    //    //    var userById = await GetUserById(user.Id); ///
-    //    //    _users.Remove(userById);
-    //    //}
-    //    //_users.Add(user);
-    //    //return user;
-
-    //    await SaveChangesAsync(new[] { user });
-    //    return user;
-    //}
-
-    public async Task DeleteUser(string id)////
+    public async Task DeleteUser(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
             throw new ArgumentNullException(nameof(id));
         }
-
-        //var user = await GetUserById(id);////
-        //_users.Remove(user);
 
         await DeleteAsync(new[] {id});
     }

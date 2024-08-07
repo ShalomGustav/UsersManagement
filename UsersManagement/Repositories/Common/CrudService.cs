@@ -1,7 +1,4 @@
-﻿using System.Linq.Expressions;
-using UsersManagement.Models;
-
-namespace UsersManagement.Repositories.Common;
+﻿namespace UsersManagement.Repositories.Common;
 
 public abstract class CrudService<TModel,TEntity> 
     where TModel : Entity 
@@ -48,17 +45,6 @@ public abstract class CrudService<TModel,TEntity>
         var entities = await GetAsync(new[] { id });
 
         return entities.FirstOrDefault();
-    }
-    //
-    public async Task<TModel> GetUserByLoginAsync(string login)
-    {
-        if (string.IsNullOrEmpty(login))
-        {
-            return null;
-        }
-
-        var  entities = await GetUserByLoginAsync(login);
-        return entities;
     }
 
     public async Task SaveChangesAsync(IEnumerable<TModel> models)

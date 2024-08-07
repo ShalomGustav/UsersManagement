@@ -5,8 +5,6 @@ namespace UsersManagement.Repositories;
 
 public class UserDbContext : DbContext
 {
-    //Почему не добавили DbSet<>? 
-    //public DbSet<User> Users { get; set; }
     public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
     {
     }
