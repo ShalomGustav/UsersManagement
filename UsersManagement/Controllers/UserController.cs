@@ -7,14 +7,14 @@ namespace UsersManagement.Controllers
 {
     public class UserController : Controller
     {
-        private readonly User _user;
-        private readonly List<User> _users;
         private readonly UserService _userService;
 
         public IActionResult Index()
         {
             return View();
         }
+
+        /// добавить GetUserByLogin
 
         public UserController(UserService userService)
         {
@@ -33,17 +33,6 @@ namespace UsersManagement.Controllers
             return Ok(result);
         }
 
-        [HttpGet("users")]
-        [Authorize]
-        public ActionResult<List<User>> GetsUsers(bool admin) 
-        {
-            if (!admin)
-            {
-                return new UnauthorizedResult();
-            }
-            return Ok(_users);
-        }
-
         [HttpPost("users")]
         public async Task SaveChangesAsync(User user)
         {
@@ -54,18 +43,8 @@ namespace UsersManagement.Controllers
             await _userService.SaveChangesAsync(user);
         }
 
-        //[HttpPut("users")]
-        //public async Task UpdateUser(User user) 
-        //{ 
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentException(nameof(user));
-        //    }
-        //    await _userService.SaveChangesAsync(user);
-        //}
-
         [HttpDelete("users/{id}")]  
-        public void DeleteUser(string id, bool admin)
+        public async Task DeleteUser(string id, bool admin)
         { 
             if(string.IsNullOrEmpty(id))
             {
@@ -74,7 +53,7 @@ namespace UsersManagement.Controllers
 
             if(admin)
             {
-                _userService.DeleteUser(id);
+                await _userService.DeleteUser(id);
             }
         }
     }
