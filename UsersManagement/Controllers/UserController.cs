@@ -14,7 +14,23 @@ namespace UsersManagement.Controllers
             return View();
         }
 
-        /// добавить GetUserByLogin
+        [HttpPost("user/{login}")]
+        public async Task<ActionResult> GetUserByLogin(string login)
+        {
+            if (string.IsNullOrEmpty(login))
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
+
+            var user = await _userService.GetByLogin(login);
+
+            if (user == null)
+            {
+                throw new NullReferenceException(nameof(user));
+            }
+
+            return Ok(user);
+        }
 
         public UserController(UserService userService)
         {
