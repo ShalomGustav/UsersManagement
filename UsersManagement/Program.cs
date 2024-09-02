@@ -106,7 +106,7 @@ app.Map("/login", (string username) =>
     return new JwtSecurityTokenHandler().WriteToken(jwt);
 });
 
-app.Map("/data", [Authorize] () => new { message = "Token is valid" });//подумать над маршрутом 
+app.Map("/data", [Authorize] () => new { message = "Token is valid" }); 
 
 app.Run();
 
