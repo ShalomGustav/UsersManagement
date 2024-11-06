@@ -17,7 +17,8 @@
 - [**Настройка аутентификации и авторизации**](#настройка-аутентификации-и-авторизации)
 - [**Применение миграций**](#применение-миграций)
 - [**Использование Swagger и включение HTTPS**](#использование-swagger-и-включение-https)
-Маршрутизация и проверка токена
+- [**Маршрутизация и проверка токена**](#маршрутизация-и-проверка-токена)
+- 
 ## Controllers
 
 Контроллеры, обрабатывающие запросы API и связывающие клиентскую часть с бизнес-логикой.
@@ -132,4 +133,63 @@
   ```
 'ID' и 'Password' указаны 'test' по умолчанию.
 
+
+## Настройка Swagger
+`Swagger` используется для документирования и тестирования `API`. Конфигурация включает определение схемы авторизации с использованием токенов `JWT`:
+
+```csharp
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1", new OpenApiInfo { Title = "Users Management API", Version = "v1" });
+
+    x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
+
 ```
+`builder.Services.AddSwaggerGen` — добавляет и настраивает `Swagger` для генерации документации по `API`.
+
+`x.SwaggerDoc("v1", new OpenApiInfo { Title = "Users Management API", Version = "v1" });` — Создаёт новую спецификацию `API` с версией `"v1"`.
+
+- `Title` указывает заголовок документации `API`, здесь — `"Users Management API"`.
+
+- `Version` задаёт версию документации, которая здесь равна `"v1"`.
+
+```csharp
+    x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+```
+
+
+
