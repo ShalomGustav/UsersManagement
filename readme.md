@@ -100,7 +100,7 @@
 
 ### AuthOptions
 
-`AuthOptions` — класс, содержащий настройки для конфигурации JWT токенов, включая ключ шифрования, издателя и аудиторию.
+`AuthOptions` — класс, содержащий настройки для конфигурации JWT токенов
 
 ### UserService
 
@@ -117,3 +117,22 @@
 
 </details>
 
+<details>
+<summary><strong> Подключение к базе данных </strong></summary>
+  
+## Подключение к базе данных 
+
+Приложение использует **SQL Server** для хранения данных пользователей. Подключение к базе данных настраивается в файле `Program.cs`:
+
+- В `Program.cs` используется `UseSqlServer`, где строка подключения содержит параметры подключения к вашей базе данных:
+  ```csharp
+  builder.Services.AddDbContext<UserDbContext>((provider, options) =>
+  {
+      options.UseSqlServer("Data Source=(local);Initial Catalog=UserManagement;Persist Security Info=True;User ID=test;Password=test;MultipleActiveResultSets=True;Connect Timeout=30;TrustServerCertificate=True");
+  });
+  ```
+'ID' и 'Password' указаны 'test' по умолчанию.
+
+
+  
+</details>
