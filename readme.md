@@ -180,13 +180,13 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 ```
-`builder.Services.AddSwaggerGen` — добавляет и настраивает `Swagger` для генерации документации по `API`.
+- `builder.Services.AddSwaggerGen` — добавляет и настраивает `Swagger` для генерации документации по `API`.
 
-`x.SwaggerDoc("v1", new OpenApiInfo { Title = "Users Management API", Version = "v1" });` — Создаёт новую спецификацию `API` с версией `"v1"`.
+- `x.SwaggerDoc("v1", new OpenApiInfo { Title = "Users Management API", Version = "v1" });` — Создаёт новую спецификацию `API` с версией `"v1"`.
 
-- `Title` указывает заголовок документации `API`, здесь — `"Users Management API"`.
+ - `Title` указывает заголовок документации `API`, здесь — `"Users Management API"`.
 
-- `Version` задаёт версию документации, которая здесь равна `"v1"`.
+ - `Version` задаёт версию документации, которая здесь равна `"v1"`.
 
 
 ```csharp
@@ -236,3 +236,5 @@ builder.Services.AddSwaggerGen(x =>
 ```
 
  - `x.AddSecurityRequirement(new OpenApiSecurityRequirement {...});` — Определяет требование безопасности, которое будет применяться к защищённым эндпоинтам.
+
+   
