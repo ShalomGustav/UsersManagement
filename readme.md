@@ -237,4 +237,24 @@ builder.Services.AddSwaggerGen(x =>
 
  - `x.AddSecurityRequirement(new OpenApiSecurityRequirement {...});` — Определяет требование безопасности, которое будет применяться к защищённым эндпоинтам.
 
+## Настройка аутентификации и авторизации
+
+JWT аутентификация и авторизация настраиваются в `Program.cs`. Здесь указываются параметры проверки токена: издатель, потребитель, срок действия и ключ для подписи.
+
+```scharp
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(x => x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = AuthOptions.ISSUER,
+        ValidateAudience = true,
+        ValidAudience = AuthOptions.AUDIENCE,
+        ValidateLifetime = true,
+        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+        ValidateIssuerSigningKey = true,
+    });
+
+builder.Services.AddAuthorization();
+```
+   
    
