@@ -8,8 +8,25 @@
 - [**Migrations**](#migrations): Миграции базы данных для создания и обновления схемы.
 - [**Models**](#models): Модели данных, используемые в приложении.
 - [**Repositories**](#repositories): Репозитории для управления доступом к данным и абстракции работы с базой данных.
+  - [**Common**](#common): Общие утилиты и абстракции для работы с репозиториями.
 - [**Services**](#services): Бизнес-логика приложения и настройки для аутентификации.
 - [**Program.cs**](#programcs): Точка входа в приложение, настройка сервисов и конфигурация аутентификации и авторизации.
+
+## Требования
+
+- .NET 6.0
+- SQL Server
+
+## Зависимости
+
+Проект использует следующие библиотеки и пакеты:
+
+- **Microsoft.AspNetCore.Authentication.JwtBearer** (версия 8.0.6) — для поддержки аутентификации через JWT.
+- **Swashbuckle.AspNetCore** (версия 6.4.0) — для интеграции Swagger в приложение ASP.NET Core.
+- **Microsoft.EntityFrameworkCore.Design** (версия 6.0.18) — для создания и работы с миграциями.
+- **Microsoft.EntityFrameworkCore.SqlServer** (версия 6.0.18) — провайдер Entity Framework Core для работы с SQL Server.
+- **Microsoft.EntityFrameworkCore.Tools** (версия 6.0.18) — инструменты для работы с Entity Framework Core, включая создание миграций.
+
 
 ## Подключение к базе данных 
 - [**Подключение к базе данных**](#подключение-к-базе-данных)
@@ -22,10 +39,10 @@
 - [**Применение миграций**](#применение-миграций)
 - [**Использование Swagger и включение HTTPS**](#использование-swagger-и-включение-https)
 - [**Маршрутизация и проверка токена**](#маршрутизация-и-проверка-токена)
-- 
+
 ## Controllers
 
-Контроллеры, обрабатывающие запросы API и связывающие клиентскую часть с бизнес-логикой.
+Контроллеры для обработки HTTP-запросов и взаимодействия с клиентом.
 
 Содержит следующие классы:
 
@@ -51,8 +68,8 @@
 
 Содержит следующие классы:
 
-- **Initial Migration**: Начальная миграция, создающая основные таблицы в базе данных.
-- **UserDbContextModelSnapshot**: Снимок модели базы данных, используемый для отслеживания изменений в модели и синхронизации с базой данных.
+- `**Initial Migration**` Начальная миграция, создающая основные таблицы в базе данных.
+- `**UserDbContextModelSnapshot**`: Снимок модели базы данных, используемый для отслеживания изменений в модели и синхронизации с базой данных.
 
 ## Models
 
@@ -84,15 +101,15 @@
 
 Общие утилиты и абстракции для работы с репозиториями:
 
-- **AbstractTypeFactory**: Фабрика для создания экземпляров абстрактных типов.
-- **CrudService**: Базовый сервис для выполнения CRUD операций.
-- **DbContextRepositoryBase**: Базовый класс для репозиториев, использующих DbContext.
-- **DbContextUnitOfWork**: Реализация паттерна Unit of Work для управления транзакциями.
-- **Entity**: Базовый класс сущности с общими свойствами.
-- **IDateEntity** и **IEntity**: Интерфейсы для сущностей.
-- **IRepository**: Общий интерфейс для всех репозиториев.
-- **IUnitOfWork**: Интерфейс для паттерна Unit of Work.
-- **ReflectionUtility**: Утилита для работы с рефлексией.
+- `**AbstractTypeFactory**`: Фабрика для создания экземпляров абстрактных типов.
+- `**CrudService**`: Базовый сервис для выполнения CRUD операций.
+- `**DbContextRepositoryBase**`: Базовый класс для репозиториев, использующих DbContext.
+- `**DbContextUnitOfWork**`: Реализация паттерна Unit of Work для управления транзакциями.
+- `**Entity**`: Базовый класс сущности с общими свойствами.
+- `**IDateEntity**` и `**IEntity**`: Интерфейсы для сущностей.
+- `**IRepository**`: Общий интерфейс для всех репозиториев.
+- `**IUnitOfWork**`: Интерфейс для паттерна Unit of Work.
+- `**ReflectionUtility**`: Утилита для работы с рефлексией.
 
 ### UserRepository
 
@@ -131,13 +148,15 @@
 ## Строка подключения
 
 - В `Program.cs` используется `UseSqlServer`, где строка подключения содержит параметры подключения к вашей базе данных:
+- 
   ```csharp
   builder.Services.AddDbContext<UserDbContext>((provider, options) =>
   {
       options.UseSqlServer("Data Source=(local);Initial Catalog=UserManagement;Persist Security Info=True;User ID=test;Password=test;MultipleActiveResultSets=True;Connect Timeout=30;TrustServerCertificate=True");
   });
   ```
-`ID` и `Password` указаны `test` по умолчанию.
+> **Обратите внимание:** В строке подключения по умолчанию используются `User ID` и `Password`, заданные как `test`.
+> Эти данные предназначены исключительно для тестирования и должны быть заменены на реальные учетные данные перед использованием приложения в рабочей среде.
 
 ## Конфигурация и аутентификация
 
@@ -290,7 +309,7 @@ using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().Create
 var dbContext = scope.ServiceProvider.GetService<UserDbContext>();
 dbContext.Database.Migrate();
 ```
-Описание:
+#### Описание:
 
 - Создание приложения: `var app = builder.Build();` — Создаёт экземпляр приложения.
 
@@ -302,5 +321,60 @@ dbContext.Database.Migrate();
 
 > ⚠️ **Важно**: Этот код подходит для разработки и тестирования. В продакшн-среде автоматическое применение миграций может быть рискованным.  
 > В таких случаях миграции обычно применяются вручную для более тщательного контроля.
+
+### Использование Swagger и включение HTTPS
+
+Swagger используется для документирования и тестирования API, и он включается только в режиме разработки. В этом же блоке настраивается HTTPS редирект, чтобы повысить безопасность приложения.
+
+```csharp
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+```
+#### Описание:
+
+- **Swagger**:
+  - `app.UseSwagger()` — Включает генерацию документации Swagger.
+  - `app.UseSwaggerUI()` — Включает интерфейс Swagger UI, который предоставляет удобный способ тестирования API.
+  - Эти вызовы ограничены средой разработки, чтобы избежать их использования в продакшн-среде.
+
+- **HTTPS редирект**:
+  - `app.UseHttpsRedirection()` — Перенаправляет все HTTP-запросы на HTTPS, добавляя дополнительный уровень безопасности.
+
+### Маршрутизация и проверка токена
+
+Приложение поддерживает маршруты для генерации и проверки JWT токенов, что позволяет управлять доступом к защищённым ресурсам.
+
+```csharp
+app.Map("/login", (string username) =>
+{
+    var claims = new List<Claim> { new Claim(ClaimTypes.Name, username) };
+    var jwt = new JwtSecurityToken(
+        issuer: AuthOptions.ISSUER,
+        audience: AuthOptions.AUDIENCE,
+        claims: claims,
+        expires: DateTime.UtcNow.AddMinutes(10),
+        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+    return new JwtSecurityTokenHandler().WriteToken(jwt);
+});
+
+app.Map("/data", [Authorize] () => new { message = "Token is valid" });
+```
+#### Описание:
+
+- **Маршрут `/login`** — Генерирует JWT токен на основе имени пользователя.
+  - Включает `claims`, содержащие имя пользователя (`username`).
+  - Токен подписывается с использованием `SigningCredentials`, что гарантирует его подлинность.
+  - Токен истекает через 10 минут, обеспечивая ограниченный срок действия.
+
+- **Маршрут `/data`** — Защищённый маршрут, доступный только при наличии действующего JWT токена.
+  - `[Authorize]` — Требует наличия действительного токена для доступа к этому маршруту.
+  - Возвращает сообщение `{ message = "Token is valid" }` при успешной аутентификации.
+
+> ⚠️ **Примечание**: Эти маршруты демонстрируют работу с JWT токенами и могут быть расширены для более сложных сценариев проверки и управления доступом.
 
 
