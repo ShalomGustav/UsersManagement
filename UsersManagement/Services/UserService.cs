@@ -2,7 +2,6 @@
 using UsersManagement.Repositories;
 using UsersManagement.Repositories.Common;
 
-
 namespace UsersManagement.Services;
 
 public class UserService : CrudService<User,UserEntity>

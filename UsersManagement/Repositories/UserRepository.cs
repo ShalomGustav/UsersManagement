@@ -12,9 +12,7 @@ public class UserRepository : DbContextRepositoryBase<UserDbContext>, IUserRepos
 
     public IQueryable<UserEntity> Users => DbContext.Set<UserEntity>();
 
-    public async Task<UserEntity[]> GetUsersByIdsAsync(string[] ids)///добавить 
-        ///GetUserByLoginAsync добавить в репозитори
-        ///
+    public async Task<UserEntity[]> GetUsersByIdsAsync(string[] ids)
     {
         if (ids == null || ids.Length == 0)
         {
@@ -25,7 +23,7 @@ public class UserRepository : DbContextRepositoryBase<UserDbContext>, IUserRepos
         var result = await query.ToArrayAsync();
         return result;
     }
-    //
+
     public async Task<UserEntity> GetUserByLoginAsync(string login)
     {
         if (string.IsNullOrEmpty(login))

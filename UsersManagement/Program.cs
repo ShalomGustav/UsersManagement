@@ -24,8 +24,6 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<Func<IUserRepository>>(provider => () => provider.CreateScope().
 ServiceProvider.GetRequiredService<IUserRepository>());
 
-
-
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(x =>
